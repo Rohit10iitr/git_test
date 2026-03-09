@@ -1,0 +1,28 @@
+{
+  "customers": {
+    "acme-corp": {
+      "name": "Acme Corp",
+      "apiKey": "YOUR_CRUSTDATA_API_KEY_FOR_ACME",
+      "enabled": true,
+      "rateLimit": {
+        "requestsPerMinute": 60
+      }
+    },
+    "beta-inc": {
+      "name": "Beta Inc",
+      "apiKey": "YOUR_CRUSTDATA_API_KEY_FOR_BETA",
+      "enabled": true,
+      "rateLimit": {
+        "requestsPerMinute": 30
+      }
+    },
+    "demo-user": {
+      "name": "Demo / Internal Testing",
+      "apiKey": "YOUR_CRUSTDATA_API_KEY_FOR_DEMO",
+      "enabled": true,
+      "rateLimit": {
+        "requestsPerMinute": 10
+      }
+    }
+  }
+}

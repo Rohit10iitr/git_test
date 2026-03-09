@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: crustdata-mcp-proxy
+    env: node
+    plan: starter            # free tier — upgrade for production
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      # Add your customer config here as an env var (recommended) or
+      # mount customers.json as a Secret File at /etc/secrets/customers.json
+      # and set CUSTOMERS_CONFIG_PATH=/etc/secrets/customers.json
+      - key: CUSTOMER_CONFIG
+        sync: false          # prompts you to fill this in the Render dashboard

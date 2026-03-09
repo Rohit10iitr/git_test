@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment & secrets — NEVER commit real API keys
+.env
+.env.local
+
+# customers.json with real API keys should NOT be committed.
+# Commit the file only with placeholder values (as shipped), or use
+# the CUSTOMER_CONFIG env var in production instead.
+# customers.json   ← uncomment this line in your own fork if you prefer
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
