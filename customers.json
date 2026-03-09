@@ -23,6 +23,14 @@
       "rateLimit": {
         "requestsPerMinute": 10
       }
+    },
+    "rohit-iimcal": {
+      "name": "Rohit (rohitd2017@email.iimcal.ac.in)",
+      "apiKey": "f65387bbf928e13c81e46de8271f016bc09554bc",
+      "enabled": true,
+      "rateLimit": {
+        "requestsPerMinute": 60
+      }
     }
   }
 }
