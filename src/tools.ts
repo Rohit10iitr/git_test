@@ -58,6 +58,48 @@ async function callCrustdata(
   }
 }
 
+async function getCrustdata(
+  apiKey: string,
+  path: string,
+  params: Record<string, unknown>,
+): Promise<unknown> {
+  const searchParams = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') {
+      searchParams.append(key, String(value));
+    }
+  }
+  const qs = searchParams.toString();
+  const url = `${CRUSTDATA_BASE_URL}${path}${qs ? `?${qs}` : ''}`;
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Token ${apiKey}`,
+        Accept: 'application/json',
+      },
+    });
+  } catch (err) {
+    throw new Error(`Network error calling Crustdata: ${String(err)}`);
+  }
+
+  const text = await response.text();
+
+  if (!response.ok) {
+    throw new Error(
+      `Crustdata API error ${response.status} ${response.statusText}: ${text}`,
+    );
+  }
+
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return text;
+  }
+}
+
 // ─── Tool definitions ─────────────────────────────────────────────────────────
 // Keep these in sync with the Crustdata API docs. The inputSchema drives the
 // structured tool call that Claude sends to us.
@@ -652,37 +694,51 @@ type ToolHandler = (apiKey: string, args: Record<string, unknown>) => Promise<un
 
 const TOOL_HANDLERS: Record<string, ToolHandler> = {
   search_companies: (apiKey, args) =>
-    callCrustdata(apiKey, '/screener/company/', args),
+    callCrustdata(apiKey, '/screener/companydb/search', args),
 
   search_people: (apiKey, args) =>
-    callCrustdata(apiKey, '/screener/person/', args),
+    callCrustdata(apiKey, '/screener/persondb/search', args),
 
   get_company_details: (apiKey, args) =>
-    callCrustdata(apiKey, '/company/enrich/', args),
+    getCrustdata(apiKey, '/screener/company', args as Record<string, unknown>),
 
   enrich_person: (apiKey, args) =>
-    callCrustdata(apiKey, '/person/enrich/', args),
+    getCrustdata(apiKey, '/screener/person/enrich', args as Record<string, unknown>),
 
   get_job_listings: (apiKey, args) =>
-    callCrustdata(apiKey, '/jobs/job_listings/', args),
+    callCrustdata(apiKey, '/data_lab/job_listings/Table/', {
+      tickers: [],
+      dataset: { name: 'job_listings', id: 'joblisting' },
+      filters: args.filters,
+      offset: args.offset ?? 0,
+      limit: args.limit ?? 100,
+      sorts: args.sorts ?? [],
+      ...(args.sync_from_source !== undefined && { sync_from_source: args.sync_from_source }),
+    }),
 
   identify_company: (apiKey, args) =>
-    callCrustdata(apiKey, '/company/identify/', args),
+    callCrustdata(apiKey, '/screener/identify/', args),
 
   get_company_linkedin_posts: (apiKey, args) =>
-    callCrustdata(apiKey, '/linkedin/company/posts/', args),
+    getCrustdata(apiKey, '/screener/linkedin_posts', args as Record<string, unknown>),
 
-  get_person_linkedin_posts: (apiKey, args) =>
-    callCrustdata(apiKey, '/linkedin/person/posts/', args),
+  get_person_linkedin_posts: (apiKey, args) => {
+    const params = { ...args } as Record<string, unknown>;
+    if (params.linkedin_profile_url) {
+      params.person_linkedin_url = params.linkedin_profile_url;
+      delete params.linkedin_profile_url;
+    }
+    return getCrustdata(apiKey, '/screener/linkedin_posts', params);
+  },
 
   search_linkedin_posts: (apiKey, args) =>
-    callCrustdata(apiKey, '/linkedin/posts/search/', args),
+    callCrustdata(apiKey, '/screener/linkedin_posts/keyword_search/', args),
 
   search_companies_realtime: (apiKey, args) =>
-    callCrustdata(apiKey, '/linkedin/company/search/', args),
+    callCrustdata(apiKey, '/screener/company/search', args),
 
   search_people_realtime: (apiKey, args) =>
-    callCrustdata(apiKey, '/linkedin/person/search/', args),
+    callCrustdata(apiKey, '/screener/person/search', args),
 };
 
 // ─── MCP Server factory ───────────────────────────────────────────────────────
