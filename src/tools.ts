@@ -694,7 +694,7 @@ type ToolHandler = (apiKey: string, args: Record<string, unknown>) => Promise<un
 
 const TOOL_HANDLERS: Record<string, ToolHandler> = {
   search_companies: (apiKey, args) =>
-    callCrustdata(apiKey, '/screener/companydb/search', args),
+    callCrustdata(apiKey, '/screener/company/search', args),
 
   search_people: (apiKey, args) =>
     callCrustdata(apiKey, '/screener/persondb/search', args),
@@ -728,7 +728,7 @@ const TOOL_HANDLERS: Record<string, ToolHandler> = {
       params.person_linkedin_url = params.linkedin_profile_url;
       delete params.linkedin_profile_url;
     }
-    return getCrustdata(apiKey, '/screener/linkedin_posts', params);
+    return getCrustdata(apiKey, '/screener/social_posts', params);
   },
 
   search_linkedin_posts: (apiKey, args) =>
