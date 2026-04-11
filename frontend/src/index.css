@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-mta-blue text-white font-semibold px-6 py-3 rounded-xl
+           hover:bg-blue-800 active:scale-95 transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-ghost {
+    @apply text-mta-blue font-medium px-3 py-1.5 rounded-lg
+           hover:bg-blue-50 active:scale-95 transition-all duration-150
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-4;
+  }
+
+  .input-field {
+    @apply w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3
+           text-sm font-medium placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-mta-blue/30 focus:border-mta-blue
+           transition-all duration-150;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  .dot-connector {
+    @apply absolute left-3.5 top-0 bottom-0 w-0.5 bg-gray-200;
+  }
+}
+
+/* Pulse animation for live indicator */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.live-dot {
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth slide-in for route cards */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slide-up 0.3s ease-out both;
+}
+
+/* Stagger children */
+.slide-up:nth-child(1) { animation-delay: 0ms; }
+.slide-up:nth-child(2) { animation-delay: 60ms; }
+.slide-up:nth-child(3) { animation-delay: 120ms; }
+.slide-up:nth-child(4) { animation-delay: 180ms; }
+.slide-up:nth-child(5) { animation-delay: 240ms; }
+.slide-up:nth-child(6) { animation-delay: 300ms; }
